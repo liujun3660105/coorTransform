@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>fmeServer_upload</title>
+    <link rel="stylesheet" href="./jquery-ui-1.12.1/jquery-ui.css">
+    <script src='./jquery-ui-1.12.1/external/jquery/jquery.js'></script>
+    <script src='./jquery-ui-1.12.1/jquery-ui.min.js'></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src='./api/fmeServerRequest.js'></script>
+    <script src='./app.js'></script>
+
+    <script>
+        //             function checkSelect(){
+        //    console.log(11);
+        // } 
+        $(function () {
+            $(".selectWidget").selectmenu({
+                change:function(){
+                    checkSelect();
+                }
+            });
+            $("#transformType").selectmenu();
+
+
+            $("#DestFormat").selectmenu();
+
+            $("#number")
+                .selectmenu()
+                .selectmenu("menuWidget")
+                .addClass("overflow");
+            $("#salutation").selectmenu();
+        }
+        );
+    </script>
+    <style type="text/css">
+        #header {
+            margin-bottom: 25px;
+        }
+        #DestFormat1{
+            font-size:20px;
+            background-color: blanchedalmond;
+           
+        }
+        /* $color-background: #eaecfa;
+$color-loader: #ce4233;
+
+body {
+  background: $color-background;
+}
+
+.loader {
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: helvetica, arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: $color-loader;
+  letter-spacing: 0.2em;
+  
+  &::before, &::after {
+    content: "";
+    display: block;
+    width: 15px;
+    height: 15px;
+    background: $color-loader;
+    position: absolute;
+    animation: load .7s infinite alternate ease-in-out;
+  }
+  
+  &::before {
+    top: 0;
+  }
+  
+  &::after {
+    bottom: 0;
+  }
+}
+
+@keyframes load {
+  0% { left: 0; height: 30px; width: 15px }
+  50% { height: 8px; width: 40px }
+  100% { left: 235px; height: 30px; width: 15px}
+} */
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="header">
+            <h1>天津常用坐标系转换系统</h1>
+            <div>
+                <h3>此系统对数据转换结果的精度不做任何保证，转换结果在项目应用中存在的坐标误差风险自行承担，请自行检查精度是否满足要求。</h3>
+                <span style='color:darkgray'>当上传shp文件时，需上传对应的.shp,.dbf,.shx三个文件</span>
+            </div>
+        </div>
+        <div id="body">
+            <fieldset>
+                <label for="sourceFormat">选择源数据格式</label>
+                <select class='selectWidget' name="sourceFormat" id="sourceFormat" onchange="checkSelect()">
+
+                    <option selected="selected" value=''>--请选择源数据格式--</option>
+                    <option value = 'SHAPE'>Esri Shape</option>
+                    <option value = 'ACAD'>Autodesk AutoCAD DWG/DXF</option>
+                </select>
+
+                <label for="transformType">选择坐标转换方式</label>
+                <select class='selectWidget' name="transformType" id="transformType" onchange="checkSelect()">
+                        <option selected="selected" value=''>--请选择坐标转换方式--</option>
+                        <option value="90To2000">天津90->国家2000</option>
+                        <option value="2000To90">国家2000->天津90</option>
+                        <option value="90To80">天津90->西安80</option>
+                        <option value="80To90">西安80->天津90</option>
+                        <option value="80To2000">西安80->国家2000</option>
+                        <option value="2000To80">国家2000->西安80</option>
+                </select>
+
+                <label for="DestFormat">选择目标数据格式</label>
+                <select class='selectWidget' name="DestFormat" id="DestFormat" onchange="checkSelect()">
+                        <option selected="selected" value=''>--请选择源数据格式--</option>
+                        <option value = 'SHAPE'>Esri Shape</option>
+                        <option value = 'ACAD'>Autodesk AutoCAD DWG/DXF</option>
+                </select>
+            </fieldset>
+            <div style='height:50px;'></div>
+
+            <fieldset>
+                <input id='uploadfile' type="file" multiple disabled>
+                <button id = 'submit' class="ui-button ui-widget ui-corner-all" onClick=dataUpload() >点击上传</button>
+            </fieldset>
+
+        </div>
+        <div class="loading">
+            <!-- <img src="./assets/loading.gif" alt=""> -->
+        </div>
+    </div>
+
+    <script>
+
+    </script>
+</body>
+
+</html>
