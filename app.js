@@ -6,6 +6,8 @@ function checkSelect() {
     DestFormat = $('#DestFormat').val();
     if (sourceFormat && transformType && DestFormat) {
         $('#uploadfile').attr('disabled', false);
+    }else{
+        $('#uploadfile').attr('disabled', true);
     }
     if (sourceFormat === 'SHAPE') {
         $('#uploadfile').attr('accept', '.shp,.shx,.dbf');
@@ -26,6 +28,8 @@ function dataUpload() {
     // img.src='./assets/loading.gif'
     // $('.loading')
     var dataSource;
+    var url;
+    var transformUrl;
     var file = document.getElementById('uploadfile').files;
     var fileName = file[0].name.split('.')[0];
     var fileCounter = document.getElementById('uploadfile').files.length;
@@ -33,9 +37,11 @@ function dataUpload() {
     var random = parseInt(Math.random() * 100000000);
     if (sourceFormat === 'SHAPE') {
         dataSource = '$(FME_SHAREDRESOURCE_SYSTEM)/temp/upload/DataTranslator/' + random + '/' + fileName + '.shp'
+        transformUrl = 'http://192.168.1.225:8083/fmedatadownload/Tools/SHPDataTranslator.fmw';
     }
     else {
         dataSource = '$(FME_SHAREDRESOURCE_SYSTEM)/temp/upload/DataTranslator/' + random + '/' + fileName + '.dwg'
+        transformUrl = 'http://192.168.1.225:8083/fmedatadownload/Tools/CADDataTranslator.fmw';
     }
     var data = new FormData();
     for (var i = 0; i < fileCounter; i++) {
@@ -48,9 +54,10 @@ function dataUpload() {
         'Authorization': 'fmetoken token=07bf2350b5a9a02e282e3b31d7b0a378c7fd4dcb',
         'Accept': 'application/json'
     }
+    
     FMEServer.uploadData(url, headers, data).then((res) => {
         console.log(res)
-        var url1 = 'http://192.168.1.225:8083/fmedatadownload/Tools/DataTranslator.fmw';
+        // var url1 = 'http://192.168.1.225:8083/fmedatadownload/Tools/DataTranslator.fmw';
         // eac8c32946ced1775470550ae2a3354af1f6f633
         var headers1 = {
             'Authorization': 'fmetoken token=07bf2350b5a9a02e282e3b31d7b0a378c7fd4dcb',
@@ -59,15 +66,21 @@ function dataUpload() {
         };
         var data1 = {
             SourceDataset_GENERIC: dataSource,
-            SourceFormat: sourceFormat,
+            // SourceFormat: sourceFormat,
             TransformType: coorType,
             DestinationFormat: DestFormat,
             GENERIC_OUT_BASE_NAME_GENERIC: 'translate',
             opt_responseformat: 'json'
         };
-        return FMEServer.transformDownload(url1, headers1, data1);
+        return FMEServer.transformDownload(transformUrl, headers1, data1);
     }).then((res) => {
         if (res.status === 200) {
+            $("#sourceFormat option[value='']").prop("selected", true);//已经有效果，但是浏览器显示没有效果
+            $("#uploadfile").val("");
+
+
+
+
             $('.loading').empty();
             var a = document.createElement('a');
             a.innerHTML = '下载数据';
